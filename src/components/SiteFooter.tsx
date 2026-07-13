@@ -68,9 +68,6 @@ export default function SiteFooter() {
               "linear-gradient(135deg, #E94706 0%, #F54A04 40%, #FF5A12 70%, #FF7B2E 100%)",
           }}
         >
-          <p className="text-xs font-semibold tracking-[0.3em] text-white/80">
-            [ لنبدأ ]
-          </p>
           <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-bold leading-[1.3] tracking-tight md:text-5xl">
             جاهزين نبني حضورًا يليق فيكم؟
           </h2>

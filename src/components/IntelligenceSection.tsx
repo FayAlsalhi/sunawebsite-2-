@@ -1,4 +1,5 @@
 import {
+  AnimatePresence,
   motion,
   useInView,
   useScroll,
@@ -159,40 +160,23 @@ function StatCounter({ value, label }: { value: string; label: string }) {
   );
 }
 
-/* ------------------------------ Phone screen ----------------------------- */
+/* --------------------------- Phone (single) ------------------------------ */
 
-function PhoneScreen({ feature }: { feature: Feature }) {
-  const [idx, setIdx] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(
-      () => setIdx((i) => (i + 1) % feature.images.length),
-      2600
-    );
-    return () => clearInterval(t);
-  }, [feature.images.length]);
-
+// The screen content for the currently-active service. Cropped inside the
+// screen element only (`overflow-hidden` lives on the screen, never the shell).
+function PhoneScreenContent({ feature }: { feature: Feature }) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-neutral-950">
-      {/* real image slideshow */}
-      {feature.images.map((src, i) => (
-        <motion.img
-          key={src}
-          src={src}
-          alt={feature.title}
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
-          initial={false}
-          animate={{ opacity: i === idx ? 1 : 0, scale: i === idx ? 1 : 1.08 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        />
-      ))}
-
-      {/* gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40" />
+    <div className="absolute inset-0">
+      <img
+        src={feature.images[0]}
+        alt={feature.title}
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/45" />
 
       {/* header */}
-      <div className="absolute inset-x-0 top-0 px-5 pb-4 pt-8 text-right">
+      <div className="absolute inset-x-0 top-0 px-5 pb-4 pt-16 text-right">
         <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-[hsl(18_88%_60%)]">
           صُنع
         </p>
@@ -201,36 +185,82 @@ function PhoneScreen({ feature }: { feature: Feature }) {
         </p>
       </div>
 
-      {/* footer stat */}
-      <div className="absolute inset-x-0 bottom-0 px-5 pb-6">
-        <div className="rounded-2xl bg-black/40 px-4 py-3 text-right backdrop-blur-md">
+      {/* screen labels */}
+      <div className="absolute inset-x-0 bottom-[104px] px-5">
+        <div className="flex flex-wrap justify-end gap-1.5">
+          {feature.screens.slice(0, 4).map((s) => (
+            <span
+              key={s}
+              className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] text-white/85 backdrop-blur-sm"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* stat */}
+      <div className="absolute inset-x-0 bottom-0 px-5 pb-7">
+        <div className="rounded-2xl bg-black/45 px-4 py-3 text-right backdrop-blur-md">
           <p className="text-lg font-extrabold text-[hsl(18_88%_60%)]">
             {feature.stat}
           </p>
           <p className="text-[11px] text-neutral-300">{feature.statLabel}</p>
-        </div>
-        {/* dots */}
-        <div className="mt-3 flex justify-center gap-1.5">
-          {feature.images.map((src, i) => (
-            <span
-              key={src}
-              className={`h-1.5 rounded-full transition-all ${
-                i === idx ? "w-5 bg-[hsl(18_88%_55%)]" : "w-1.5 bg-white/40"
-              }`}
-            />
-          ))}
         </div>
       </div>
     </div>
   );
 }
 
+// A single realistic device: metallic shell, thick bezel, side buttons, a
+// dynamic island, and a soft ground shadow. Only the screen content swaps.
 function Phone({ feature }: { feature: Feature }) {
   return (
-    <div className="relative h-[520px] w-[260px] shrink-0 rounded-[2.6rem] border-[10px] border-neutral-900 bg-neutral-900 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.85)]">
-      <div className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-neutral-900" />
-      <div className="h-full w-full overflow-hidden rounded-[2rem]">
-        <PhoneScreen feature={feature} />
+    <div className="relative">
+      {/* very soft ground shadow */}
+      <div
+        aria-hidden
+        className="absolute -bottom-5 left-1/2 h-8 w-3/4 -translate-x-1/2 rounded-[50%] bg-black/50 blur-2xl"
+      />
+
+      {/* shell — metallic frame via gradient + realistic thickness (p-[11px]) */}
+      <div className="relative h-[540px] w-[266px] rounded-[3rem] bg-gradient-to-b from-neutral-600 via-neutral-800 to-neutral-900 p-[11px] shadow-[0_45px_80px_-35px_rgba(0,0,0,0.9)]">
+        {/* side buttons */}
+        <span
+          aria-hidden
+          className="absolute -left-[2px] top-[108px] h-7 w-[3px] rounded-l-sm bg-neutral-600"
+        />
+        <span
+          aria-hidden
+          className="absolute -left-[2px] top-[150px] h-12 w-[3px] rounded-l-sm bg-neutral-600"
+        />
+        <span
+          aria-hidden
+          className="absolute -right-[2px] top-[140px] h-16 w-[3px] rounded-r-sm bg-neutral-600"
+        />
+
+        {/* screen — the ONLY element that clips its content */}
+        <div className="relative h-full w-full overflow-hidden rounded-[2.4rem] bg-black">
+          {/* dynamic island */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-3 z-20 h-[26px] w-[88px] -translate-x-1/2 rounded-full bg-black ring-1 ring-white/5"
+          />
+
+          {/* crossfade between service screens (fade + rise + subtle scale) */}
+          <AnimatePresence>
+            <motion.div
+              key={feature.id}
+              initial={{ opacity: 0, y: 16, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -16, scale: 0.985 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0"
+            >
+              <PhoneScreenContent feature={feature} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
@@ -238,53 +268,144 @@ function Phone({ feature }: { feature: Feature }) {
 
 /* ----------------------------- Feature card ------------------------------ */
 
+// Text-only card: title → description → statistic → CTA. No phone, no number.
 function FeatureCard({
   feature,
   index,
+  isActive,
+  setRef,
 }: {
   feature: Feature;
   index: number;
+  isActive: boolean;
+  setRef: (el: HTMLDivElement | null) => void;
 }) {
   return (
+    // Full-width card. Its background extends the whole width — the phone
+    // overlay floats on top of it. Content is kept clear of the phone: on the
+    // opposite side (desktop, via pl) and in the lower area (mobile, justify-end).
     <motion.div
-      initial={{ opacity: 0, y: 48 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
+      viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
       transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.9 }}
       style={{ willChange: "transform, opacity" }}
-      className="relative flex flex-col items-center gap-8 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02] p-8 backdrop-blur-sm md:flex-row-reverse md:items-center md:gap-12 md:p-12"
+      className={`flex min-h-[94vh] w-full flex-col justify-end rounded-[28px] border p-8 pb-10 text-right backdrop-blur-sm transition-colors duration-500 md:min-h-[82vh] md:justify-center md:p-12 md:pl-[44%] ${
+        isActive
+          ? "border-[hsl(18_88%_55%)]/40 bg-white/[0.04]"
+          : "border-white/10 bg-white/[0.02]"
+      }`}
     >
-      {/* text side (right in RTL) */}
-      <div className="flex-1 text-right">
-        <span className="mr-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(18_88%_55%)]/40 text-sm font-bold text-[hsl(18_88%_60%)]">
-          0{index + 1}
-        </span>
-        <h3 className="mt-6 text-2xl font-bold tracking-tight text-white md:text-4xl">
+      {/* content block — the element observed for active detection */}
+      <div ref={setRef} data-index={index}>
+        <h3 className="text-2xl font-bold tracking-tight text-white md:text-4xl">
           {feature.title}
         </h3>
-        <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-400 md:mr-auto">
+        <p className="mt-5 max-w-md text-base leading-relaxed text-neutral-400">
           {feature.desc}
         </p>
 
-        <div className="mt-8 flex items-baseline justify-end gap-3">
-          <span className="text-sm text-neutral-500">{feature.statLabel}</span>
-          <span className="text-3xl font-extrabold text-[hsl(18_88%_60%)] md:text-4xl">
+        {/* statistic — visually separated from the description */}
+        <div className="mt-8 border-t border-white/10 pt-6">
+          <p className="text-4xl font-extrabold text-[hsl(18_88%_60%)] md:text-5xl">
             {feature.stat}
-          </span>
+          </p>
+          <p className="mt-1 text-sm text-neutral-500">{feature.statLabel}</p>
         </div>
 
         <a
           href="#contact"
-          className="group mt-8 inline-flex w-fit items-center gap-2 self-start rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
+          className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
         >
           <span>{feature.cta}</span>
           <span className="transition-transform group-hover:translate-x-1">→</span>
         </a>
       </div>
-
-      {/* phone inside the box (left) */}
-      <Phone feature={feature} />
     </motion.div>
+  );
+}
+
+/* --------------------------- Services showcase ---------------------------- */
+
+// One sticky phone paired with a scrolling stack of cards. An
+// IntersectionObserver watching a thin band at the viewport centre decides
+// which card is active; only the phone's screen content changes.
+function ServicesShowcase() {
+  const [active, setActive] = useState(0);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    let observer: IntersectionObserver | null = null;
+
+    // The active zone differs by layout: a thin band at the viewport centre on
+    // desktop (phone is centred), and a band lower down on mobile (below the
+    // pinned phone, where the card content actually reads).
+    const build = () => {
+      observer?.disconnect();
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      const rootMargin = isDesktop
+        ? "-45% 0px -45% 0px"
+        : "-60% 0px -25% 0px";
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const idx = Number((entry.target as HTMLElement).dataset.index);
+              if (!Number.isNaN(idx)) setActive(idx);
+            }
+          });
+        },
+        { rootMargin, threshold: 0 },
+      );
+      cardRefs.current.forEach((el) => el && observer!.observe(el));
+    };
+
+    build();
+    window.addEventListener("resize", build);
+    return () => {
+      window.removeEventListener("resize", build);
+      observer?.disconnect();
+    };
+  }, []);
+
+  return (
+    // Two layers stacked in the SAME grid cell: the full-width card stack and,
+    // on top of it, a sticky phone overlay. There is no phone column — the
+    // cards run the full width and the phone floats over them (Bevel-style).
+    <div className="mt-16 grid grid-cols-1 md:mt-24">
+      {/* Card layer — full-width cards */}
+      <div className="col-start-1 row-start-1 flex flex-col gap-6 md:gap-8">
+        {FEATURES.map((f, i) => (
+          <FeatureCard
+            key={f.id}
+            feature={f}
+            index={i}
+            isActive={i === active}
+            setRef={(el) => {
+              cardRefs.current[i] = el;
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Phone overlay layer — same cell as the cards. The sticky container is
+          bounded to roughly one card's height (not the full viewport), so the
+          phone always lives INSIDE the card area and never spills past the
+          first/last card. It stays centred, covering the seam between cards as
+          they scroll, so a card→card change reads as happening inside the box.
+          pointer-events-none so the cards' buttons stay clickable. */}
+      <div className="pointer-events-none col-start-1 row-start-1">
+        <div className="sticky top-[9vh] flex h-[82vh] items-start justify-center md:items-center md:justify-end md:pl-[7%]">
+          {/* Mobile only: an opaque stage behind the phone so transitioning
+              card text is hidden in the upper band and reads cleanly below it.
+              Desktop keeps the phone fully transparent over the card. */}
+          <div className="absolute inset-x-0 top-0 h-[56vh] bg-gradient-to-b from-[var(--esq-bg)] from-80% to-transparent md:hidden" />
+          <div className="relative origin-top scale-[0.54] sm:scale-[0.64] md:origin-center md:scale-[0.82]">
+            <Phone feature={FEATURES[active]} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -472,12 +593,8 @@ export default function IntelligenceSection() {
           </motion.p>
         </div>
 
-        {/* -------- Cards with a real phone inside each box ------- */}
-        <div className="mt-16 flex flex-col gap-8 md:mt-24">
-          {FEATURES.map((f, i) => (
-            <FeatureCard key={f.id} feature={f} index={i} />
-          ))}
-        </div>
+        {/* -------- One sticky phone + scrolling service cards ------- */}
+        <ServicesShowcase />
 
         {/* ----------------------- Process journey ------------------- */}
         <div className="mt-32 md:mt-40">
@@ -526,29 +643,6 @@ export default function IntelligenceSection() {
             </ol>
           </div>
         </div>
-
-        {/* ----------------------- CTA ------------------- */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-24 text-center md:mt-32"
-        >
-          <h2 className="text-3xl font-bold tracking-tight md:text-5xl">
-            جاهزين نبني حضور يليق فيكم؟
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-neutral-400">
-            نبدأ بفهم علامتك وأهدافك، ثم نصنع خطة محتوى وحملات تترك أثرًا حقيقيًا.
-          </p>
-          <a
-            href="mailto:hello@suna.studio"
-            className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[hsl(18_88%_55%)] px-8 py-4 text-sm font-bold text-black transition-transform duration-200 ease-out hover:scale-105 active:scale-[0.97]"
-          >
-            <span>تواصل وابدأ معنا</span>
-            <span className="transition-transform group-hover:translate-x-1">→</span>
-          </a>
-        </motion.div>
       </div>
     </section>
   );
