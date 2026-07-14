@@ -1,42 +1,3 @@
-import { motion } from "framer-motion";
-
-const ORANGE = "hsl(18 88% 55%)";
-
-/* ------------------------ Large rotating orange badge ------------------------ */
-
-function RotatingBadge() {
-  return (
-    <div
-      className="relative flex h-40 w-40 items-center justify-center rounded-full md:h-48 md:w-48"
-      style={{
-        background: ORANGE,
-        boxShadow: "0 30px 80px -24px hsl(18 88% 55% / 0.8)",
-      }}
-    >
-      <motion.div
-        className="absolute inset-0"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-      >
-        <svg viewBox="0 0 100 100" className="h-full w-full">
-          <defs>
-            <path
-              id="footer-badge-curve"
-              d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0"
-            />
-          </defs>
-          <text className="fill-white text-[8.5px] uppercase tracking-[0.24em]">
-            <textPath href="#footer-badge-curve" startOffset="0%">
-              SUNA · SUNA · SUNA · SUNA · SUNA · SUNA ·
-            </textPath>
-          </text>
-        </svg>
-      </motion.div>
-      <span className="text-3xl font-bold text-white md:text-4xl">✦</span>
-    </div>
-  );
-}
-
 /* -------------------------------- Footer ---------------------------------- */
 
 const services = [
@@ -81,11 +42,6 @@ export default function SiteFooter() {
             تواصل معنا ←
           </a>
         </div>
-      </div>
-
-      {/* Rotating badge */}
-      <div className="flex justify-center py-16 md:py-20">
-        <RotatingBadge />
       </div>
 
       {/* Links */}

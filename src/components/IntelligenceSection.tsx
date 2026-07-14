@@ -7,6 +7,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 /* --------------------------------- Data ---------------------------------- */
 
@@ -313,13 +314,23 @@ function FeatureCard({
           <p className="mt-1 text-sm text-neutral-500">{feature.statLabel}</p>
         </div>
 
-        <a
-          href="#contact"
-          className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
-        >
-          <span>{feature.cta}</span>
-          <span className="transition-transform group-hover:translate-x-1">→</span>
-        </a>
+        {feature.id === "social" ? (
+          <Link
+            to="/services/social"
+            className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
+          >
+            <span>{feature.cta}</span>
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </Link>
+        ) : (
+          <a
+            href="#contact"
+            className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
+          >
+            <span>{feature.cta}</span>
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </a>
+        )}
       </div>
     </motion.div>
   );
@@ -519,6 +530,122 @@ function ProcessStep({
   );
 }
 
+/* --------------------------- Impact track -------------------------------- */
+/* A winding track — dark outer edge + orange-gradient rail — that draws
+   itself with the scroll, while three bold teaser lines rise into view. It
+   frames the "journey" of the process below it. */
+
+const TRACK_PATH =
+  "M -40 132 C 250 100 560 118 842 168 C 1036 202 1040 324 848 358 C 620 398 372 372 196 406 C 26 438 24 556 212 584 C 522 616 902 590 1262 604";
+
+function TrackPhrase({
+  children,
+  progress,
+  range,
+  className,
+}: {
+  children: React.ReactNode;
+  progress: MotionValue<number>;
+  range: [number, number];
+  className: string;
+}) {
+  const y = useTransform(progress, range, ["115%", "0%"]);
+  const opacity = useTransform(
+    progress,
+    [range[0], (range[0] + range[1]) / 2, range[1]],
+    [0, 1, 1],
+  );
+  return (
+    <div className={`absolute overflow-hidden pb-[0.12em] ${className}`}>
+      <motion.span
+        style={{ y, opacity, textShadow: "0 6px 20px rgba(0,0,0,0.65)" }}
+        className="block whitespace-nowrap text-[6.5vw] font-black uppercase leading-[0.95] tracking-tight text-white md:text-6xl"
+      >
+        {children}
+      </motion.span>
+    </div>
+  );
+}
+
+function ImpactTrack() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const draw = useTransform(scrollYProgress, [0.12, 0.55], [0, 1]);
+
+  return (
+    <div
+      ref={ref}
+      className="relative mx-auto mt-14 w-full max-w-5xl overflow-hidden md:mt-20"
+    >
+      {/* warm depth glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(58% 60% at 50% 46%, hsl(18 88% 55% / 0.14), transparent 72%)",
+        }}
+      />
+
+      <svg viewBox="0 0 1200 600" className="w-full" fill="none" aria-hidden>
+        <defs>
+          <linearGradient id="impact-track" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="hsl(18 92% 68%)" />
+            <stop offset="55%" stopColor="hsl(18 90% 55%)" />
+            <stop offset="100%" stopColor="hsl(14 90% 46%)" />
+          </linearGradient>
+        </defs>
+        {/* outer dark edge — depth */}
+        <motion.path
+          d={TRACK_PATH}
+          stroke="rgba(0,0,0,0.55)"
+          strokeWidth="54"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ pathLength: draw }}
+        />
+        {/* inner orange rail */}
+        <motion.path
+          d={TRACK_PATH}
+          stroke="url(#impact-track)"
+          strokeWidth="30"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ pathLength: draw }}
+        />
+      </svg>
+
+      {/* Teaser lines — rise into view as the track passes */}
+      <div className="pointer-events-none absolute inset-0" dir="ltr">
+        <TrackPhrase
+          progress={scrollYProgress}
+          range={[0.3, 0.42]}
+          className="left-[4%] top-[2%]"
+        >
+          Something big
+        </TrackPhrase>
+        <TrackPhrase
+          progress={scrollYProgress}
+          range={[0.4, 0.52]}
+          className="left-1/2 top-[40%] -translate-x-1/2"
+        >
+          is coming down
+        </TrackPhrase>
+        <TrackPhrase
+          progress={scrollYProgress}
+          range={[0.5, 0.62]}
+          className="right-[4%] top-[72%]"
+        >
+          the tracks
+        </TrackPhrase>
+      </div>
+    </div>
+  );
+}
+
 /* --------------------------------- Section -------------------------------- */
 
 export default function IntelligenceSection() {
@@ -617,8 +744,11 @@ export default function IntelligenceSection() {
             رحلة واضحة من الفهم إلى النتيجة.
           </motion.p>
 
+          {/* Winding track visual that draws with scroll */}
+          <ImpactTrack />
+
           {/* The journey: vertical rail on mobile, horizontal rail on desktop */}
-          <div ref={journeyRef} className="relative mt-14 md:mt-24">
+          <div ref={journeyRef} className="relative mt-16 md:mt-24">
             {/* Desktop horizontal rail (track + orange scroll progress) */}
             <div
               aria-hidden
