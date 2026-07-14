@@ -12,7 +12,7 @@ export default function AmbientBackground() {
         className="absolute -left-[10%] -top-[10%] h-[45vw] w-[45vw] rounded-full blur-[120px]"
         style={{
           background:
-            "radial-gradient(circle, hsl(18 88% 55% / 0.35), transparent 70%)",
+            "radial-gradient(circle, hsl(9 100% 46% / 0.35), transparent 70%)",
         }}
         animate={{ x: [0, 60, -20, 0], y: [0, 40, 80, 0], scale: [1, 1.15, 0.95, 1] }}
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
@@ -23,7 +23,7 @@ export default function AmbientBackground() {
         className="absolute -bottom-[15%] -right-[10%] h-[50vw] w-[50vw] rounded-full blur-[130px]"
         style={{
           background:
-            "radial-gradient(circle, hsl(18 88% 45% / 0.28), transparent 70%)",
+            "radial-gradient(circle, hsl(3 100% 41% / 0.28), transparent 70%)",
         }}
         animate={{ x: [0, -50, 30, 0], y: [0, -40, -70, 0], scale: [1, 1.1, 1.2, 1] }}
         transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}

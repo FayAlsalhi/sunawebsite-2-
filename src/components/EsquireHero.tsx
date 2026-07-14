@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
 
 /* Netflix-Ads-style opening for صُنع.
@@ -7,10 +7,15 @@ import { useEffect, useState } from "react";
    into the nav, then slides to the right edge once the orange (services)
    section is reached. */
 
-const RED = "#E50914";
+const RED = "#E92500"; // صُنع core scarlet — matches brand
 const EASE = [0.16, 1, 0.3, 1] as const;
-const POSTER =
-  "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=1600&auto=format&fit=crop";
+
+/* Three hero frames the white wordmark overlaps / merges with. */
+const POSTERS = [
+  "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=1000&auto=format&fit=crop",
+];
 
 /* ------------------------------ Download icon ---------------------------- */
 
@@ -96,20 +101,27 @@ function TravelingLogo({ introDone }: { introDone: boolean }) {
     };
   }, []);
 
-  // Phase 1 — over the first screen of scroll: big red centre → small docked.
-  const end = vh * 0.5;
-  const scale = useTransform(scrollY, [0, end], [1, 0.13], { clamp: true });
-  const y = useTransform(scrollY, [0, end], [0, -(vh / 2 - 46)], { clamp: true });
-  const color = useTransform(scrollY, [0, end * 0.7], [RED, "#ffffff"]);
+  // Phase 1 — docks quickly (over ~⅓ of a screen) so a small scroll already
+  // slides it up toward the nav.
+  const end = vh * 0.34;
+  const rawScale = useTransform(scrollY, [0, end], [1, 0.13], { clamp: true });
+  const rawY = useTransform(scrollY, [0, end], [0, -(vh / 2 - 46)], { clamp: true });
 
-  // Phase 2 — when the orange (services) section arrives: dock slides right.
+  // Phase 2 — when the services section arrives: dock slides right.
   const rightX = Math.max(vw / 2 - 72, 0);
-  const x = useTransform(
+  const rawX = useTransform(
     scrollY,
     [servicesTop - vh, servicesTop - vh * 0.4],
     [0, rightX],
     { clamp: true },
   );
+
+  // Spring-smooth every scroll-driven value so the mark glides (never snaps)
+  // as it travels center → nav → right edge.
+  const spring = { stiffness: 140, damping: 24, mass: 0.5 } as const;
+  const scale = useSpring(rawScale, spring);
+  const y = useSpring(rawY, spring);
+  const x = useSpring(rawX, spring);
 
   return (
     <div className="pointer-events-none fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2">
@@ -119,12 +131,28 @@ function TravelingLogo({ introDone }: { introDone: boolean }) {
         transition={{ duration: 0.5, ease: EASE }}
       >
         <motion.div style={{ x, y, scale, willChange: "transform" }}>
-          <motion.span
-            style={{ color }}
-            className="block select-none text-center text-[24vw] font-bold leading-none tracking-tight md:text-[13rem]"
-          >
-            صُنع
-          </motion.span>
+          {/* The real صُنع wordmark, drawn as a mask so it keeps the
+              scroll-linked colour morph (brand red → white). */}
+          {/* White wordmark. mix-blend "difference" lets the frames below show
+              through where it overlaps them, so the mark merges into the images
+              while staying bright over the dark area above. */}
+          <motion.div
+            role="img"
+            aria-label="صُنع"
+            style={{
+              backgroundColor: "#ffffff",
+              mixBlendMode: "difference",
+              WebkitMaskImage: "url(/brand/suna-wordmark-white.png)",
+              maskImage: "url(/brand/suna-wordmark-white.png)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+            }}
+            className="aspect-[1336/800] w-[64vw] md:w-[30rem]"
+          />
         </motion.div>
       </motion.div>
     </div>
@@ -139,32 +167,32 @@ function RedTeaser({ revealed }: { revealed: boolean }) {
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center ${
         revealed ? "pointer-events-none" : ""
       }`}
-      style={{ background: RED }}
+      style={{ background: "var(--suna-gradient)" }}
       initial={{ y: 0 }}
       animate={{ y: revealed ? "-100%" : 0 }}
       transition={{ duration: 0.9, ease: [0.7, 0, 0.2, 1] }}
       aria-hidden={revealed}
     >
       <motion.p
-        className="text-sm font-semibold tracking-[0.25em] text-black/80 md:text-base"
+        className="text-sm font-semibold tracking-[0.25em] text-white/85 md:text-base"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6, ease: EASE }}
       >
-        حمِّل التقرير
+        استوديو صناعة المحتوى
       </motion.p>
 
-      <motion.span
-        className="mt-1 select-none text-[22vw] font-black leading-none tracking-tight text-black md:text-[12rem]"
+      <motion.img
+        src="/brand/suna-wordmark-white.png"
+        alt="صُنع"
+        className="mt-3 w-[62vw] max-w-[520px] select-none"
         initial={{ opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.42, duration: 0.7, ease: EASE }}
-      >
-        صُنع
-      </motion.span>
+      />
 
       <motion.div
-        className="mt-8 text-black"
+        className="mt-8 text-white/90"
         animate={{ y: [0, 12, 0] }}
         transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -175,6 +203,46 @@ function RedTeaser({ revealed }: { revealed: boolean }) {
 }
 
 /* ---------------------------- Feature scene ------------------------------ */
+
+/* Per-frame parallax speed — the middle frame drifts up fastest as the hero
+   scrolls away, the two sides trail more slowly. */
+const FRAME_SPEED = [0.5, 1.4, 0.5];
+
+function HeroFrame({
+  src,
+  i,
+  revealed,
+}: {
+  src: string;
+  i: number;
+  revealed: boolean;
+}) {
+  const { scrollY } = useScroll();
+  // Parallax layer (scroll-linked). Kept separate from the reveal layer below
+  // so the two transforms never fight over `y`.
+  const y = useTransform(scrollY, [0, 900], [0, -260 * FRAME_SPEED[i]]);
+  // Dissolve as the hero hands off to the About section, so the frames melt
+  // into it instead of cutting out abruptly.
+  const opacity = useTransform(scrollY, [0, 460, 740], [1, 1, 0]);
+
+  return (
+    <motion.div style={{ y, opacity, willChange: "transform, opacity" }}>
+      <motion.div
+        className="relative overflow-hidden rounded-t-[1rem] md:rounded-t-[1.75rem]"
+        initial={{ opacity: 0, y: 64, scale: 1.06 }}
+        animate={revealed ? { opacity: 1, y: 0, scale: 1 } : {}}
+        transition={{ delay: 0.5 + i * 0.1, duration: 1, ease: EASE }}
+      >
+        <img
+          src={src}
+          alt={`صُنع ${i + 1}`}
+          className="h-[34vh] w-full object-cover md:h-[44vh]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+      </motion.div>
+    </motion.div>
+  );
+}
 
 function FeatureScene({ revealed }: { revealed: boolean }) {
   return (
@@ -190,7 +258,7 @@ function FeatureScene({ revealed }: { revealed: boolean }) {
           delay={0.15}
           className="text-sm font-bold tracking-[0.22em] text-white md:text-base"
         >
-          صُنع آدز
+          صُنع ميديا
         </BlockReveal>
         <BlockReveal
           active={revealed}
@@ -204,20 +272,13 @@ function FeatureScene({ revealed }: { revealed: boolean }) {
       {/* Centre is occupied by the shared TravelingLogo (fixed, overlaid). */}
       <div className="flex-1" />
 
-      {/* Poster — enters from below with a slight zoom, rounded top corners. */}
-      <motion.div
-        className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-t-[2rem]"
-        initial={{ opacity: 0, y: 64, scale: 1.06 }}
-        animate={revealed ? { opacity: 1, y: 0, scale: 1 } : {}}
-        transition={{ delay: 0.5, duration: 1, ease: EASE }}
-      >
-        <img
-          src={POSTER}
-          alt="صُنع"
-          className="h-[34vh] w-full object-cover md:h-[44vh]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-      </motion.div>
+      {/* Three frames — enter from below, staggered. The white wordmark above
+          overlaps their top edge and blends into them. */}
+      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-3 items-start gap-2 px-2 md:gap-3 md:px-3">
+        {POSTERS.map((src, i) => (
+          <HeroFrame key={src} src={src} i={i} revealed={revealed} />
+        ))}
+      </div>
     </section>
   );
 }
