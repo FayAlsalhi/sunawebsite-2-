@@ -145,7 +145,7 @@
   a:focus-visible,
   button:focus-visible,
   [role="button"]:focus-visible {
-    outline: 2px solid hsl(18 88% 55%);
+    outline: 2px solid hsl(9 100% 46%);
     outline-offset: 3px;
   }
 }
@@ -171,6 +171,14 @@
   --font-display: "Playfair Display", Georgia, serif;
   --font-body: "IBM Plex Sans Arabic", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
   --font-arabic: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-latin: "Poppins", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- صُنع (Suna) brand palette ----
+     Sampled from the official brand gradient (deep-red → scarlet → orange). */
+  --suna-red: #d00a00;            /* deep red   — hsl(3 100% 41%)  */
+  --suna: #e92500;                /* core scarlet — hsl(9 100% 46%) */
+  --suna-orange: #ff6a3d;         /* orange     — hsl(14 100% 62%) */
+  --suna-gradient: linear-gradient(135deg, #d00a00 0%, #e92500 45%, #ff6a3d 100%);
 }
 
 @layer base {
@@ -197,5 +205,26 @@
 
 .font-display { font-family: var(--font-display); }
 .font-body { font-family: var(--font-body); }
+.font-latin { font-family: var(--font-latin); }
+
+/* Brand wave motif — a full-width divider using the official صُنع wave mark.
+   Rendered as a mask so it can be tinted any brand color via background. */
+.suna-wave {
+  height: 1.15rem;
+  background-color: currentColor;
+  -webkit-mask: url("/brand/suna-wave-white.png") repeat-x center / auto 100%;
+  mask: url("/brand/suna-wave-white.png") repeat-x center / auto 100%;
+}
+
+/* Infinite client marquee — track holds two copies of the row, so a -50%
+   shift loops seamlessly. Paused on hover via a group utility. */
+@keyframes suna-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
 
 

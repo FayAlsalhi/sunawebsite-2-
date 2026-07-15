@@ -115,7 +115,7 @@ const PROCESS = [
   { step: "04", title: "نطوّر", desc: "نقيس الأداء ونحسّن ما يصنع الفرق.", tag: "نمو" },
 ];
 
-const ORANGE = "hsl(18 88% 55%)";
+const ORANGE = "hsl(9 100% 46%)";
 
 /* ----------------------------- Animated stat ----------------------------- */
 
@@ -152,9 +152,9 @@ function StatCounter({ value, label }: { value: string; label: string }) {
   return (
     <div ref={ref} className="text-center">
       <p className="text-4xl font-extrabold tabular-nums text-white md:text-6xl">
-        {prefix && <span className="text-[hsl(18_88%_60%)]">{prefix}</span>}
+        {prefix && <span className="text-[hsl(14_100%_62%)]">{prefix}</span>}
         {count}
-        {suffix && <span className="text-[hsl(18_88%_60%)]">{suffix}</span>}
+        {suffix && <span className="text-[hsl(14_100%_62%)]">{suffix}</span>}
       </p>
       <p className="mt-3 text-sm text-neutral-400 md:text-base">{label}</p>
     </div>
@@ -178,7 +178,7 @@ function PhoneScreenContent({ feature }: { feature: Feature }) {
 
       {/* header */}
       <div className="absolute inset-x-0 top-0 px-5 pb-4 pt-16 text-right">
-        <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-[hsl(18_88%_60%)]">
+        <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-[hsl(14_100%_62%)]">
           صُنع
         </p>
         <p className="mt-1 text-sm font-bold leading-snug text-white drop-shadow">
@@ -203,7 +203,7 @@ function PhoneScreenContent({ feature }: { feature: Feature }) {
       {/* stat */}
       <div className="absolute inset-x-0 bottom-0 px-5 pb-7">
         <div className="rounded-2xl bg-black/45 px-4 py-3 text-right backdrop-blur-md">
-          <p className="text-lg font-extrabold text-[hsl(18_88%_60%)]">
+          <p className="text-lg font-extrabold text-[hsl(14_100%_62%)]">
             {feature.stat}
           </p>
           <p className="text-[11px] text-neutral-300">{feature.statLabel}</p>
@@ -293,7 +293,7 @@ function FeatureCard({
       style={{ willChange: "transform, opacity" }}
       className={`flex min-h-[94vh] w-full flex-col justify-end rounded-[28px] border p-8 pb-10 text-right backdrop-blur-sm transition-colors duration-500 md:min-h-[82vh] md:justify-center md:p-12 md:pl-[44%] ${
         isActive
-          ? "border-[hsl(18_88%_55%)]/40 bg-white/[0.04]"
+          ? "border-[hsl(9_100%_46%)]/40 bg-white/[0.04]"
           : "border-white/10 bg-white/[0.02]"
       }`}
     >
@@ -308,7 +308,7 @@ function FeatureCard({
 
         {/* statistic — visually separated from the description */}
         <div className="mt-8 border-t border-white/10 pt-6">
-          <p className="text-4xl font-extrabold text-[hsl(18_88%_60%)] md:text-5xl">
+          <p className="text-4xl font-extrabold text-[hsl(14_100%_62%)] md:text-5xl">
             {feature.stat}
           </p>
           <p className="mt-1 text-sm text-neutral-500">{feature.statLabel}</p>
@@ -317,7 +317,7 @@ function FeatureCard({
         {feature.id === "social" ? (
           <Link
             to="/services/social"
-            className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
+            className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(9_100%_46%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(14_100%_62%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(9_100%_46%)] hover:text-black active:scale-[0.97]"
           >
             <span>{feature.cta}</span>
             <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -325,7 +325,7 @@ function FeatureCard({
         ) : (
           <a
             href="#contact"
-            className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(18_88%_55%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(18_88%_60%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(18_88%_55%)] hover:text-black active:scale-[0.97]"
+            className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(9_100%_46%)]/40 px-6 py-3 text-sm font-semibold text-[hsl(14_100%_62%)] transition-[transform,background-color,color] duration-200 ease-out hover:bg-[hsl(9_100%_46%)] hover:text-black active:scale-[0.97]"
           >
             <span>{feature.cta}</span>
             <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -471,7 +471,7 @@ function ProcessStep({
 
   const circleBase = `h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-bold tabular-nums transition-colors duration-500 ${
     active
-      ? "border-[hsl(18_88%_55%)] bg-[hsl(18_88%_55%)]/15 text-[hsl(18_88%_60%)]"
+      ? "border-[hsl(9_100%_46%)] bg-[hsl(9_100%_46%)]/15 text-[hsl(14_100%_62%)]"
       : "border-white/15 bg-[var(--esq-bg)] text-white/40"
   }`;
 
@@ -492,7 +492,7 @@ function ProcessStep({
           <div className="relative mt-2 w-px flex-1 bg-white/10">
             <motion.div
               style={{ scaleY: segFill, willChange: "transform" }}
-              className="absolute inset-0 origin-top bg-[hsl(18_88%_55%)]/60"
+              className="absolute inset-0 origin-top bg-[hsl(9_100%_46%)]/60"
             />
           </div>
         )}
@@ -521,7 +521,7 @@ function ProcessStep({
         </motion.p>
         <motion.span
           variants={itemVariants}
-          className="mt-3 inline-block text-[11px] font-medium tracking-[0.15em] text-[hsl(18_88%_60%)]/80"
+          className="mt-3 inline-block text-[11px] font-medium tracking-[0.15em] text-[hsl(14_100%_62%)]/80"
         >
           {p.tag}
         </motion.span>
@@ -586,16 +586,16 @@ function ImpactTrack() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(58% 60% at 50% 46%, hsl(18 88% 55% / 0.14), transparent 72%)",
+            "radial-gradient(58% 60% at 50% 46%, hsl(9 100% 46% / 0.14), transparent 72%)",
         }}
       />
 
       <svg viewBox="0 0 1200 600" className="w-full" fill="none" aria-hidden>
         <defs>
           <linearGradient id="impact-track" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="hsl(18 92% 68%)" />
-            <stop offset="55%" stopColor="hsl(18 90% 55%)" />
-            <stop offset="100%" stopColor="hsl(14 90% 46%)" />
+            <stop offset="0%" stopColor="hsl(14 100% 66%)" />
+            <stop offset="55%" stopColor="hsl(9 100% 50%)" />
+            <stop offset="100%" stopColor="hsl(3 100% 41%)" />
           </linearGradient>
         </defs>
         {/* outer dark edge — depth */}
@@ -757,7 +757,7 @@ export default function IntelligenceSection() {
             <motion.div
               aria-hidden
               style={{ scaleX: journeyProgress, willChange: "transform" }}
-              className="absolute inset-x-0 top-[20px] hidden h-px origin-right bg-[hsl(18_88%_55%)]/60 md:block"
+              className="absolute inset-x-0 top-[20px] hidden h-px origin-right bg-[hsl(9_100%_46%)]/60 md:block"
             />
 
             <ol className="md:grid md:grid-cols-4 md:gap-x-8">

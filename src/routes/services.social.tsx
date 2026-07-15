@@ -17,7 +17,7 @@ export const Route = createFileRoute("/services/social")({
 });
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const ORANGE = "hsl(18 88% 55%)";
+const ORANGE = "hsl(9 100% 46%)";
 
 /* ============================ HERO · Make Sales ============================ */
 
@@ -156,7 +156,7 @@ function MakeSalesHero() {
 
       {/* Make Sales */}
       <h1
-        className="relative z-10 select-none text-center font-black leading-[0.92] tracking-tight text-neutral-900"
+        className="font-latin relative z-10 select-none text-center font-black leading-[0.92] tracking-tight text-neutral-900"
         style={{ textShadow: "0 12px 34px rgba(0,0,0,0.14)" }}
       >
         <motion.span
@@ -232,7 +232,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
   return (
     <span ref={ref} dir="ltr" className="tabular-nums">
       {n}
-      <span className="text-[hsl(18_88%_60%)]">{suffix}</span>
+      <span className="text-[hsl(14_100%_62%)]">{suffix}</span>
     </span>
   );
 }
@@ -281,7 +281,7 @@ function Body() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="text-xs font-semibold tracking-[0.3em] text-[hsl(18_88%_55%)]"
+          className="text-xs font-semibold tracking-[0.3em] text-[hsl(9_100%_46%)]"
         >
           [ إدارة الحسابات ]
         </motion.p>
@@ -316,9 +316,9 @@ function Body() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10% 0px" }}
               transition={{ duration: 0.5, delay: (i % 3) * 0.06, ease: EASE }}
-              className="rounded-[1.5rem] border border-white/10 bg-white/[0.02] p-7 text-right backdrop-blur-sm transition-colors duration-300 hover:border-[hsl(18_88%_55%)]/40"
+              className="rounded-[1.5rem] border border-white/10 bg-white/[0.02] p-7 text-right backdrop-blur-sm transition-colors duration-300 hover:border-[hsl(9_100%_46%)]/40"
             >
-              <span className="text-sm font-bold text-[hsl(18_88%_60%)]">
+              <span className="text-sm font-bold text-[hsl(14_100%_62%)]">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="mt-4 text-xl font-bold text-white">{it.t}</h3>
@@ -366,7 +366,7 @@ function Body() {
                 transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
                 className="text-right"
               >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[hsl(18_88%_55%)]/40 text-sm font-bold tabular-nums text-[hsl(18_88%_60%)]">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[hsl(9_100%_46%)]/40 text-sm font-bold tabular-nums text-[hsl(14_100%_62%)]">
                   {s.n}
                 </span>
                 <h3 className="mt-5 text-lg font-bold text-white">{s.t}</h3>
@@ -393,8 +393,8 @@ function Body() {
             نبدأ بفهم علامتك، ثم نصنع خطة إدارة ومحتوى تُحوِّل المتابعين إلى نتائج.
           </p>
           <a
-            href="mailto:hello@suna.studio"
-            className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[hsl(18_88%_55%)] px-8 py-4 text-sm font-bold text-black transition-transform duration-200 ease-out hover:scale-105 active:scale-[0.97]"
+            href="mailto:Suna.mediaa@gmail.com"
+            className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[hsl(9_100%_46%)] px-8 py-4 text-sm font-bold text-black transition-transform duration-200 ease-out hover:scale-105 active:scale-[0.97]"
           >
             <span>تواصل وابدأ معنا</span>
             <span className="transition-transform group-hover:-translate-x-1">

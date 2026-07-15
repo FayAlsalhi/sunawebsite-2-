@@ -2,7 +2,6 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { PROJECTS, type Project } from "@/lib/projects";
-import AmbientBackground from "@/components/AmbientBackground";
 
 /* True below the lg breakpoint (1024px) — stacking effect needs a tall viewport. */
 function useIsCompact() {
@@ -17,75 +16,84 @@ function useIsCompact() {
   return compact;
 }
 
-/* --------------------------- Story image reel ---------------------------- */
-/* An editorial strip of studio frames that drifts right→left as the block
-   passes through the viewport — the same "images travelling with the scroll"
-   language as the gallery above, on a fresh horizontal axis. */
+/* ----------------------------- Client ticker ----------------------------- */
+/* Fancy, interactive marquee of client brands — two rows drifting in opposite
+   directions, pausing on hover, each name lighting up in صُنع scarlet. Styled
+   in the same "system-design" language as the rest of the site. */
 
-type Frame = { src: string; index: number; size: string };
-
-const REEL: Frame[] = [
-  {
-    src: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=900&auto=format&fit=crop",
-    index: 1,
-    size: "h-[230px] w-[330px] md:h-[380px] md:w-[540px]",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=900&auto=format&fit=crop",
-    index: 2,
-    size: "h-[200px] w-[270px] md:h-[300px] md:w-[390px]",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1492288991661-058aa541ff43?q=80&w=900&auto=format&fit=crop",
-    index: 3,
-    size: "h-[260px] w-[300px] md:h-[430px] md:w-[470px]",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=900&auto=format&fit=crop",
-    index: 4,
-    size: "h-[200px] w-[270px] md:h-[300px] md:w-[390px]",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=900&auto=format&fit=crop",
-    index: 5,
-    size: "h-[240px] w-[310px] md:h-[380px] md:w-[500px]",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6?q=80&w=900&auto=format&fit=crop",
-    index: 6,
-    size: "h-[210px] w-[280px] md:h-[330px] md:w-[420px]",
-  },
+const CLIENTS = [
+  "NEBULA",
+  "APEX",
+  "IPSUM",
+  "LUMA",
+  "ORBIT",
+  "VERTEX",
+  "PULSE",
+  "NORTH",
+  "CIRCA",
+  "MONO",
+  "DAILY",
+  "ZENITH",
 ];
 
-function StoryReel() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const x = useTransform(scrollYProgress, [0, 1], ["6%", "-24%"]);
-
+function MarqueeRow({
+  items,
+  reverse,
+  duration,
+}: {
+  items: string[];
+  reverse?: boolean;
+  duration: number;
+}) {
+  // Two copies of the row so a -50% shift loops seamlessly.
+  const row = [...items, ...items];
   return (
-    <div ref={ref} className="relative mt-14 md:mt-20">
-      <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]">
-        <motion.div
-          style={{ x, willChange: "transform" }}
-          className="flex w-max items-center gap-4 pt-7 md:gap-6"
+    <div className="group relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_7%,#000_93%,transparent)]">
+      <div
+        className="flex shrink-0 items-center group-hover:[animation-play-state:paused]"
+        style={{
+          animation: `suna-marquee ${duration}s linear infinite`,
+          animationDirection: reverse ? "reverse" : "normal",
+        }}
+      >
+        {row.map((name, i) => (
+          <span key={i} className="flex shrink-0 items-center">
+            <span className="font-latin cursor-default select-none px-8 text-2xl font-semibold tracking-wide text-neutral-600 transition-[color,text-shadow] duration-300 hover:text-[var(--suna)] hover:[text-shadow:0_0_28px_rgba(233,37,0,0.55)] md:px-12 md:text-4xl">
+              {name}
+            </span>
+            <span aria-hidden className="text-sm text-[var(--suna)]/40">
+              +
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ClientTicker() {
+  return (
+    <div className="mt-24 md:mt-32">
+      {/* system-design header */}
+      <div className="flex items-center gap-4">
+        <span className="font-mono text-[0.62rem] uppercase tracking-[0.35em] text-[var(--suna)]">
+          [ عملاؤنا ]
+        </span>
+        <div className="h-px flex-1 bg-white/10" />
+        <span
+          dir="ltr"
+          className="font-mono text-[0.62rem] tracking-[0.3em] text-neutral-600"
         >
-          {REEL.map((f) => (
-            <figure key={f.index} className="relative shrink-0">
-              <span className="absolute -top-6 right-1 font-mono text-[0.7rem] tracking-[0.3em] text-neutral-500">
-                {String(f.index).padStart(2, "0")}
-              </span>
-              <img
-                src={f.src}
-                alt={`لقطة من الاستوديو ${f.index}`}
-                loading="lazy"
-                className={`${f.size} rounded-[1.25rem] object-cover shadow-[0_30px_70px_-40px_rgba(0,0,0,0.7)]`}
-              />
-            </figure>
-          ))}
-        </motion.div>
+          12+
+        </span>
+      </div>
+      <p className="mt-5 text-sm text-neutral-400 md:text-base">
+        نعمل مع علامات تجارية رائدة
+      </p>
+
+      <div className="mt-10 space-y-5 md:space-y-6">
+        <MarqueeRow items={CLIENTS} duration={34} />
+        <MarqueeRow items={[...CLIENTS].reverse()} reverse duration={28} />
       </div>
     </div>
   );
@@ -156,43 +164,47 @@ function RollingNumber({
   );
 }
 
-function StatRow({
+function StatCard({
   value,
   suffix,
   label,
   active,
   index,
-  isLast,
 }: {
   value: number;
   suffix: string;
   label: string;
   active: boolean;
   index: number;
-  isLast: boolean;
 }) {
   return (
-    <div>
-      <div className="flex items-end justify-start gap-5 md:gap-7">
+    <div className="relative">
+      {/* mono index — system-design cue */}
+      <span className="font-mono text-[0.62rem] tracking-[0.3em] text-[var(--suna)]">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+
+      <div className="mt-4 flex items-start">
         <span
           dir="ltr"
-          className="flex items-start text-[3.75rem] font-bold leading-none tracking-tight text-white md:text-[7rem]"
+          className="flex items-start text-[3.5rem] font-bold leading-none tracking-tight text-white md:text-[5.5rem]"
         >
-          <RollingNumber value={value} active={active} baseDelay={index * 0.14} />
-          <span className="ml-2 text-[hsl(18_88%_55%)]">{suffix}</span>
+          <RollingNumber value={value} active={active} baseDelay={index * 0.12} />
+          <span className="ml-1 text-[var(--suna)]">{suffix}</span>
         </span>
-        <p className="max-w-[8rem] pb-2 text-right text-sm leading-snug text-neutral-400 md:max-w-[12rem] md:pb-4 md:text-lg">
-          {label}
-        </p>
       </div>
-      {!isLast && (
-        <motion.div
-          className="mt-6 h-px origin-right bg-gradient-to-l from-white/20 via-white/10 to-transparent md:mt-8"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: active ? 1 : 0 }}
-          transition={{ duration: 1, ease: STAT_EASE, delay: index * 0.14 + 0.25 }}
-        />
-      )}
+
+      <p className="mt-5 text-sm leading-snug text-neutral-400 md:text-base">
+        {label}
+      </p>
+
+      {/* underline that draws itself in */}
+      <motion.div
+        className="mt-6 h-px origin-right bg-gradient-to-l from-[var(--suna)]/60 via-white/10 to-transparent"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: active ? 1 : 0 }}
+        transition={{ duration: 1, ease: STAT_EASE, delay: index * 0.12 + 0.2 }}
+      />
     </div>
   );
 }
@@ -205,21 +217,30 @@ const STATS = [
 
 function StoryStats() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.3, once: true });
+  const inView = useInView(ref, { amount: 0.4, once: true });
 
   return (
-    <div ref={ref} className="mt-20 flex flex-col gap-6 md:mt-28 md:gap-8">
-      {STATS.map((s, i) => (
-        <StatRow
-          key={s.label}
-          value={s.value}
-          suffix={s.suffix}
-          label={s.label}
-          active={inView}
-          index={i}
-          isLast={i === STATS.length - 1}
-        />
-      ))}
+    <div ref={ref}>
+      {/* system-design header */}
+      <div className="flex items-center gap-4">
+        <span className="font-mono text-[0.62rem] uppercase tracking-[0.35em] text-[var(--suna)]">
+          [ أرقامنا ]
+        </span>
+        <div className="h-px flex-1 bg-white/10" />
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 gap-12 sm:grid-cols-3 md:mt-14 md:gap-10">
+        {STATS.map((s, i) => (
+          <StatCard
+            key={s.label}
+            value={s.value}
+            suffix={s.suffix}
+            label={s.label}
+            active={inView}
+            index={i}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -258,7 +279,7 @@ function ProjectCard({
       />
       <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/20 to-transparent" />
       <div className="absolute right-5 top-5 text-right md:right-9 md:top-9">
-        <span className="inline-block rounded-full bg-[hsl(18_88%_55%)] px-3 py-1 text-xs font-medium text-white">
+        <span className="inline-block rounded-full bg-[hsl(9_100%_46%)] px-3 py-1 text-xs font-medium text-white">
           {project.tag}
         </span>
         <h3 className="mt-4 max-w-[16rem] text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
@@ -308,80 +329,13 @@ const fadeUp = {
 
 export default function AgencySection() {
   return (
-    <section id="about" className="w-full scroll-mt-24 py-24 text-white md:py-32" style={{ background: "var(--esq-bg)" }}>
+    <section className="w-full py-24 text-white md:py-32" style={{ background: "var(--esq-bg)" }}>
       <div className="mx-auto max-w-6xl px-6 md:px-8">
-        {/* --------------------- Who we are · the story --------------------- */}
-        <div className="relative overflow-hidden">
-          {/* soft ambient warmth — carries the mood over from the gallery */}
-          <div className="opacity-70">
-            <AmbientBackground />
-          </div>
+        {/* General statistics — the section opener */}
+        <StoryStats />
 
-          <div className="relative z-10">
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              className="text-xs font-semibold tracking-[0.3em] text-[hsl(18_88%_55%)]"
-            >
-              [ من نحن ]
-            </motion.p>
-            <motion.h2
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              transition={{ delay: 0.05 }}
-              className="mt-4 max-w-3xl text-3xl font-bold leading-[1.3] tracking-tight md:text-5xl"
-            >
-              استوديو رقمي متكامل لصناعة المحتوى والحملات
-            </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="mt-5 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg"
-            >
-              من الفكرة إلى الأثر، نصنع حضورًا رقميًا متكاملًا لعلامتك.
-            </motion.p>
-
-            <StoryReel />
-            <StoryStats />
-          </div>
-        </div>
-
-        {/* Logos */}
-        <div className="mt-24">
-          <p className="text-sm text-neutral-400">
-            نعمل مع علامات تجارية رائدة
-          </p>
-          <div className="mt-8 grid grid-cols-3 items-center gap-x-8 gap-y-6 md:grid-cols-6">
-            {[
-              "NEBULA",
-              "APEX",
-              "IPSUM",
-              "LOGO",
-              "LUMA",
-              "ORBIT",
-              "VERTEX",
-              "PULSE",
-              "NORTH",
-              "CIRCA",
-              "MONO",
-              "DAILY",
-            ].map((name) => (
-              <span
-                key={name}
-                className="text-center text-lg font-semibold tracking-wide text-neutral-600"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
-        </div>
+        {/* Interactive client ticker */}
+        <ClientTicker />
 
         {/* Featured projects heading */}
         <div id="work" className="mt-28 scroll-mt-24">
@@ -390,7 +344,7 @@ export default function AgencySection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="text-xs font-semibold tracking-[0.3em] text-[hsl(18_88%_55%)]"
+            className="text-xs font-semibold tracking-[0.3em] text-[hsl(9_100%_46%)]"
           >
             [ أعمالنا المميزة ]
           </motion.p>

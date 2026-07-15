@@ -41,7 +41,7 @@ export const Route = createFileRoute("/projects/$slug")({
             reset();
             router.invalidate();
           }}
-          className="rounded-full bg-[hsl(18_88%_55%)] px-5 py-2 text-sm font-medium"
+          className="rounded-full bg-[hsl(9_100%_46%)] px-5 py-2 text-sm font-medium"
         >
           Retry
         </button>
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/projects/$slug")({
   notFoundComponent: () => (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-neutral-950 text-white">
       <p>Project not found.</p>
-      <Link to="/" className="text-[hsl(18_88%_55%)] underline">
+      <Link to="/" className="text-[hsl(9_100%_46%)] underline">
         Back home
       </Link>
     </div>
@@ -77,7 +77,7 @@ function ProjectDetail() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mt-10"
         >
-          <span className="inline-block rounded-full bg-[hsl(18_88%_55%)] px-3 py-1 text-xs font-medium text-white">
+          <span className="inline-block rounded-full bg-[hsl(9_100%_46%)] px-3 py-1 text-xs font-medium text-white">
             {project.tag}
           </span>
           <h1 className="mt-5 text-4xl font-bold leading-[1.3] tracking-tight md:text-6xl">
@@ -115,7 +115,7 @@ function ProjectDetail() {
         </div>
 
         <div className="mt-20 border-t border-white/10 pt-10">
-          <p className="text-xs font-semibold tracking-[0.3em] text-[hsl(18_88%_55%)]">
+          <p className="text-xs font-semibold tracking-[0.3em] text-[hsl(9_100%_46%)]">
             [ مشاريع أخرى ]
           </p>
           <div className="mt-6 flex flex-wrap gap-4">
@@ -124,7 +124,7 @@ function ProjectDetail() {
                 key={p.slug}
                 to="/projects/$slug"
                 params={{ slug: p.slug }}
-                className="rounded-full border border-white/15 px-5 py-2 text-sm text-neutral-300 transition-colors hover:border-[hsl(18_88%_55%)] hover:text-white"
+                className="rounded-full border border-white/15 px-5 py-2 text-sm text-neutral-300 transition-colors hover:border-[hsl(9_100%_46%)] hover:text-white"
               >
                 {p.title}
               </Link>
